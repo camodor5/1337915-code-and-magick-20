@@ -46,7 +46,8 @@ var getBarColor = function (name) {
     barColor = 'rgba(255, 0, 0, 1)';
 
   } else {
-    var barColor = 'hsl(240, ' + saturation + ' % , 50%)';
+    var barColor = 'hsl(240, ' + saturation + '% , 50%)';
+    console.log(barColor);
   }
   return barColor;
 };
