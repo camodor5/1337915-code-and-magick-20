@@ -13,6 +13,13 @@ var BAR = {
   padding: 50,
 };
 
+var COLOR = {
+  black: '#000',
+  red: 'rgba(255, 0, 0, 1)',
+  white: '#fff',
+  shadow: 'rgba(0, 0, 0, 0.3)'
+};
+
 var GAP = 10;
 var GISTO_X = CLOUD.x + CLOUD.padding * 2;
 var GISTO_Y = CLOUD.y + 80;
@@ -24,7 +31,7 @@ var renderRect = function (ctx, x, y, color) {
 };
 
 var renderCloud = function (ctx, x, y, color) {
-  renderRect(ctx, x + GAP, y + GAP, 'rgba(0, 0, 0, 0.3)');
+  renderRect(ctx, x + GAP, y + GAP, COLOR.shadow);
   renderRect(ctx, x, y, color);
 };
 
@@ -52,7 +59,7 @@ var getRandomNumber = function (max, min) {
 var getBarColor = function (name) {
   var saturation = getRandomNumber(100);
   if (name === 'Вы') {
-    barColor = 'rgba(255, 0, 0, 1)';
+    barColor = COLOR.red;
 
   } else {
     var barColor = 'hsl(240, ' + saturation + '% , 50%)';
@@ -66,66 +73,46 @@ var renderIntro = function (ctx, text, x, y, font, fillStyle) {
   ctx.font = font;
   ctx.fillText(text, x, y);
 };
-/*
-var renderResults = function (ctx, players, times) {
-  var roundedTime = Math.round(times[j]);
-  for (var j = 0; j < players.length; j++) {
-    ctx.fillStyle = '#000';
-    ctx.fillText(roundedTime, GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + (BAR.maxHeight - barHeight) - CLOUD.padding);
-    ctx.fillText(players[j], GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + BAR.maxHeight + CLOUD.padding);
-  }
+
+var renderResults = function (ctx, time, x, y) {
+  var roundedTime = Math.round(time);
+  ctx.fillStyle = COLOR.black;
+  ctx.fillText(roundedTime, x, y);
 };
 
-var renderGistogram = function(ctx, players, times) {
+var renderNames = function (ctx, player, x, y) {
+  ctx.fillStyle = COLOR.black;
+  ctx.fillText(player, x, y);
+};
+
+var renderBar = function (ctx, player, time, x, y, width, height) {
+  ctx.fillStyle = getBarColor(player);
+  ctx.fillRect(x, y, width, height);
+};
+
+
+var renderGistogram = function (ctx, players, times) {
 
   for (var i = 0; i < players.length; i++) {
-
-    ctx.fillStyle = getBarColor(players[i]);
-    ctx.fillRect(GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + (BAR.maxHeight - barHeight), BAR.width, barHeight);
-
-
-    var roundedTime = Math.round(times[i]);
-    ctx.fillStyle = '#000';
-    ctx.fillText(roundedTime, GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + (BAR.maxHeight - barHeight) - CLOUD.padding);
-    ctx.fillText(players[i], GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + BAR.maxHeight + CLOUD.padding);
-
+    var maxTime = getMaxElement(times);
+    var barHeight = (BAR.maxHeight * times[i]) / maxTime;
+    var currentX = GISTO_X + (BAR.width + BAR.padding) * i;
+    var currentY = GISTO_Y + BAR.maxHeight;
+    renderNames(ctx, players[i], currentX, currentY + CLOUD.padding);
+    renderResults(ctx, times[i], currentX, currentY - barHeight - GAP);
+    renderBar(ctx, players[i], times[i], currentX, currentY - barHeight, BAR.width, barHeight);
   }
 };
-*/
 
 
 window.renderStatistics = function (ctx, players, times) {
   // Рисуем облако
-  renderCloud(ctx, CLOUD.x, CLOUD.y, '#fff');
+  renderCloud(ctx, CLOUD.x, CLOUD.y, COLOR.white);
 
   // Рисуем вступительный текст
-  renderIntro(ctx, 'Ура вы победили!', CLOUD.x + CLOUD.padding, CLOUD.y + CLOUD.padding, '16px PT Mono', '#000');
-  renderIntro(ctx, 'Список результатов:', CLOUD.x + CLOUD.padding, CLOUD.y + CLOUD.padding * 2, '16px PT Mono', '#000');
+  renderIntro(ctx, 'Ура вы победили!', CLOUD.x + CLOUD.padding, CLOUD.y + CLOUD.padding, '16px PT Mono', COLOR.black);
+  renderIntro(ctx, 'Список результатов:', CLOUD.x + CLOUD.padding, CLOUD.y + CLOUD.padding * 2, '16px PT Mono', COLOR.black);
   // Рисуем гистограмму
-  /*
+
   renderGistogram(ctx, players, times);
-  renderResults(ctx, players, times);
-
-  var maxTime = getMaxElement(times);
-  var barHeight = (BAR.maxHeight * times[i]) / maxTime; */
-
-  var maxTime = getMaxElement(times);
-
-  ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-  ctx.fillRect(GISTO_X, GISTO_Y, BAR.width, barHeight);
-
-  for (var i = 0; i < players.length; i++) {
-    var barHeight = (BAR.maxHeight * times[i]) / maxTime;
-
-    ctx.fillStyle = getBarColor(players[i]);
-    ctx.fillRect(GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + (BAR.maxHeight - barHeight), BAR.width, barHeight);
-
-
-    var roundedTime = Math.round(times[i]);
-    ctx.fillStyle = '#000';
-    ctx.fillText(roundedTime, GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + (BAR.maxHeight - barHeight) - CLOUD.padding);
-    ctx.fillText(players[i], GISTO_X + (BAR.width + BAR.padding) * i, GISTO_Y + BAR.maxHeight + CLOUD.padding);
-
-  }
-
 };
