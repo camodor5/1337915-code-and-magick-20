@@ -57,12 +57,11 @@ var getRandomNumber = function (max, min) {
 
 
 var getBarColor = function (name) {
+
   var saturation = getRandomNumber(100);
+  var barColor = 'hsl(240, ' + saturation + '% , 50%)';
   if (name === 'Вы') {
     barColor = COLOR.red;
-
-  } else {
-    var barColor = 'hsl(240, ' + saturation + '% , 50%)';
   }
   return barColor;
 };
